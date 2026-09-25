@@ -1,0 +1,112 @@
+{%- liquid
+  assign pill_class = 'filter-pill'
+  if block.settings.active
+    assign pill_class = pill_class | append: ' filter-pill--active'
+  endif
+
+  capture pill_style
+    echo '--filter-pill-color: '
+    echo block.settings.text_color
+    echo '; --filter-pill-active-bg: '
+    echo block.settings.active_background
+    echo '; --filter-pill-active-fg: '
+    echo block.settings.active_text_color
+    echo ';'
+  endcapture
+-%}
+
+{%- if block.settings.link != blank -%}
+  <a
+    class="{{ pill_class }}"
+    href="{{ block.settings.link }}"
+    style="{{ pill_style }}"
+    {{ block.shopify_attributes }}
+  >
+    {{- block.settings.label -}}
+  </a>
+{%- else -%}
+  <span
+    class="{{ pill_class }}"
+    style="{{ pill_style }}"
+    {{ block.shopify_attributes }}
+  >
+    {{- block.settings.label -}}
+  </span>
+{%- endif -%}
+
+{% stylesheet %}
+  .filter-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 2px;
+    border: 1px solid var(--filter-pill-color, rgb(var(--color-foreground-rgb)));
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.14px;
+    color: var(--filter-pill-color, rgb(var(--color-foreground-rgb)));
+    text-decoration: none;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+
+  .filter-pill--active {
+    background-color: var(--filter-pill-active-bg, #14495b);
+    border-color: var(--filter-pill-active-bg, #14495b);
+    color: var(--filter-pill-active-fg, #fcf9f5);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Filter pill",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Pet Odor"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "active",
+      "label": "Active",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#231F20"
+    },
+    {
+      "type": "color",
+      "id": "active_background",
+      "label": "Active background",
+      "default": "#14495B"
+    },
+    {
+      "type": "color",
+      "id": "active_text_color",
+      "label": "Active text color",
+      "default": "#FCF9F5"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Filter pill",
+      "category": "Text"
+    }
+  ]
+}
+{% endschema %}

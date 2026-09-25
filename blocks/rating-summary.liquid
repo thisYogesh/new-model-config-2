@@ -1,0 +1,90 @@
+<div
+  class="rating-summary"
+  style="--rating-summary-color: {{ block.settings.text_color }};"
+  {{ block.shopify_attributes }}
+>
+  <span class="rating-summary__stars">
+    {% render 'review-stars', rating: block.settings.rating %}
+    {%- if block.settings.score != blank -%}
+      <span class="rating-summary__score">{{ block.settings.score }}</span>
+    {%- endif -%}
+  </span>
+  {%- if block.settings.caption != blank -%}
+    <span class="rating-summary__caption">{{ block.settings.caption }}</span>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .rating-summary {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-block-start: 1px;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: var(--rating-summary-color, rgb(var(--color-foreground-rgb)));
+  }
+
+  .rating-summary__stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rating-summary__caption {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  @media screen and (max-width: 749px) {
+    .rating-summary {
+      font-size: 14px;
+      line-height: 18px;
+      letter-spacing: 0.14px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Rating summary",
+  "tag": null,
+  "settings": [
+    {
+      "type": "range",
+      "id": "rating",
+      "label": "Rating",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "default": 4.5
+    },
+    {
+      "type": "text",
+      "id": "score",
+      "label": "Score",
+      "default": "4.8"
+    },
+    {
+      "type": "text",
+      "id": "caption",
+      "label": "Caption",
+      "default": "from 10k+ Reviews"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#231F20"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rating summary",
+      "category": "Text"
+    }
+  ]
+}
+{% endschema %}

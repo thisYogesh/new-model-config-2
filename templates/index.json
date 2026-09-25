@@ -729,11 +729,370 @@
         "padding-block-start": 48,
         "padding-block-end": 60
       }
+    },
+    "carousel_reviews": {
+      "type": "carousel",
+      "name": "Customer reviews",
+      "blocks": {
+        "static-header": {
+          "type": "group",
+          "name": "t:names.header",
+          "static": true,
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "flex-start",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "flex-start",
+            "gap": 32,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to bottom",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "open_in_new_tab": false,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "title_stack": {
+              "type": "group",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "flex-start",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "flex-start",
+                "gap": 10,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "background_media": "none",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to bottom",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "open_in_new_tab": false,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "rating": {
+                  "type": "rating-summary",
+                  "settings": {
+                    "rating": 4.5,
+                    "score": "4.8",
+                    "caption": "from 10k+ Reviews",
+                    "text_color": "#231F20"
+                  },
+                  "blocks": {}
+                },
+                "heading": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h2>Thousands of Happy Customers</h2>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "custom",
+                    "font": "var(--font-heading--family)",
+                    "font_size": "3.5rem",
+                    "line_height": "tight",
+                    "letter_spacing": "normal",
+                    "case": "uppercase",
+                    "wrap": "pretty",
+                    "text_color": "#231F20",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "rating",
+                "heading"
+              ]
+            },
+            "filter_bar": {
+              "type": "group",
+              "settings": {
+                "content_direction": "row",
+                "vertical_on_mobile": false,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "flex-start",
+                "gap": 8,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "background_media": "none",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to bottom",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "open_in_new_tab": false,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "pill_1": {
+                  "type": "filter-pill",
+                  "settings": {
+                    "label": "Pet Odor",
+                    "active": false,
+                    "text_color": "#231F20",
+                    "active_background": "#14495B",
+                    "active_text_color": "#FCF9F5"
+                  },
+                  "blocks": {}
+                },
+                "pill_2": {
+                  "type": "filter-pill",
+                  "settings": {
+                    "label": "Set-In Stains",
+                    "active": true,
+                    "text_color": "#231F20",
+                    "active_background": "#14495B",
+                    "active_text_color": "#FCF9F5"
+                  },
+                  "blocks": {}
+                },
+                "pill_3": {
+                  "type": "filter-pill",
+                  "settings": {
+                    "label": "Sweat & Gym",
+                    "active": false,
+                    "text_color": "#231F20",
+                    "active_background": "#14495B",
+                    "active_text_color": "#FCF9F5"
+                  },
+                  "blocks": {}
+                },
+                "pill_4": {
+                  "type": "filter-pill",
+                  "settings": {
+                    "label": "Sensitive Skin",
+                    "active": false,
+                    "text_color": "#231F20",
+                    "active_background": "#14495B",
+                    "active_text_color": "#FCF9F5"
+                  },
+                  "blocks": {}
+                },
+                "pill_5": {
+                  "type": "filter-pill",
+                  "settings": {
+                    "label": "Baked-On Grease",
+                    "active": false,
+                    "text_color": "#231F20",
+                    "active_background": "#14495B",
+                    "active_text_color": "#FCF9F5"
+                  },
+                  "blocks": {}
+                },
+                "pill_6": {
+                  "type": "filter-pill",
+                  "settings": {
+                    "label": "Hard Water",
+                    "active": false,
+                    "text_color": "#231F20",
+                    "active_background": "#14495B",
+                    "active_text_color": "#FCF9F5"
+                  },
+                  "blocks": {}
+                },
+                "pill_7": {
+                  "type": "filter-pill",
+                  "settings": {
+                    "label": "Baby Messes",
+                    "active": false,
+                    "text_color": "#231F20",
+                    "active_background": "#14495B",
+                    "active_text_color": "#FCF9F5"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "pill_1",
+                "pill_2",
+                "pill_3",
+                "pill_4",
+                "pill_5",
+                "pill_6",
+                "pill_7"
+              ]
+            }
+          },
+          "block_order": [
+            "title_stack",
+            "filter_bar"
+          ]
+        },
+        "static-carousel-content": {
+          "type": "_carousel-content",
+          "name": "t:names.carousel_content",
+          "static": true,
+          "settings": {
+            "height": "fit",
+            "position": "top",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "review_1": {
+              "type": "_review-card",
+              "settings": {
+                "image": "shopify://shop_images/screenshot-2026-08-14-at-1-16-05-pm-1-desktop-49226766.jpg",
+                "rating": 4.5,
+                "title": "Eco-friendly product",
+                "quote": "<p>“The pods are convenient to use as I have low vision and do not want to measure a cleaning product. I like that I could choose an unscented product. Best of all, it comes in recyclable packaging.”</p>",
+                "author": "Kathy F",
+                "product_label": "Laundry Pods",
+                "product_link": "shopify://collections/all",
+                "text_color": "#231F20"
+              },
+              "blocks": {}
+            },
+            "review_2": {
+              "type": "_review-card",
+              "settings": {
+                "image": "shopify://shop_images/dts-mindful-mess-shauna-summers-photos-id8720-1-1-desktop-64939181.jpg",
+                "rating": 4.5,
+                "title": "Cleans Wonderfully!!",
+                "quote": "<p>“I have been using Dropps for a number of years. I like the free and clear because my husband is allergic to mass market stuff. It dissolves right away and cleans wonderfully!”</p>",
+                "author": "Stina",
+                "product_label": "Laundry Pods",
+                "product_link": "shopify://collections/all",
+                "text_color": "#231F20"
+              },
+              "blocks": {}
+            },
+            "review_3": {
+              "type": "_review-card",
+              "settings": {
+                "image": "shopify://shop_images/screenshot-2026-08-14-at-1-16-05-pm-1-mobile-48023461.png",
+                "rating": 4.5,
+                "title": "Eco-friendly product",
+                "quote": "<p>“The pods are convenient to use as I have low vision and do not want to measure a cleaning product. I like that I could choose an unscented product”</p>",
+                "author": "Kathy F",
+                "product_label": "Laundry Pods",
+                "product_link": "shopify://collections/all",
+                "text_color": "#231F20"
+              },
+              "blocks": {}
+            },
+            "review_4": {
+              "type": "_review-card",
+              "settings": {
+                "image": "shopify://shop_images/screenshot-2026-08-14-at-1-16-05-pm-1-desktop-49226826.png",
+                "rating": 4.5,
+                "title": "Eco-friendly product",
+                "quote": "<p>“The pods are convenient to use as I have low vision and do not want to measure a cleaning product. I like that I could choose an unscented product. Best of all, it comes in recyclable packaging.”</p>",
+                "author": "Kathy F",
+                "product_label": "Laundry Pods",
+                "product_link": "shopify://collections/all",
+                "text_color": "#231F20"
+              },
+              "blocks": {}
+            },
+            "review_5": {
+              "type": "_review-card",
+              "settings": {
+                "image": "shopify://shop_images/screenshot-2026-08-14-at-1-16-05-pm-1-desktop-49226826.png",
+                "rating": 4.5,
+                "title": "Eco-friendly product",
+                "quote": "<p>“The pods are convenient to use as I have low vision and do not want to measure a cleaning product. I like that I could choose an unscented product. Best of all, it comes in recyclable packaging.”</p>",
+                "author": "Kathy F",
+                "product_label": "Stain & Odor Laundry Pods",
+                "product_link": "shopify://collections/all",
+                "text_color": "#231F20"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "review_1",
+            "review_2",
+            "review_3",
+            "review_4",
+            "review_5"
+          ]
+        }
+      },
+      "settings": {
+        "columns": 4,
+        "mobile_columns": "2",
+        "section_width": "page-width",
+        "columns_gap": 32,
+        "columns_gap_mobile": 16,
+        "gap": 48,
+        "background_color": "#E9EA6B",
+        "icons_style": "none",
+        "icons_shape": "none",
+        "pagination": "dots",
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
     }
   },
   "order": [
     "hero_jVaWmY",
     "product_list_fa6P9H",
-    "section_certifications"
+    "section_certifications",
+    "carousel_reviews"
   ]
 }

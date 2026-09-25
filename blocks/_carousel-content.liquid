@@ -25,7 +25,27 @@
   if block.settings.height == 'fill'
     assign slide_position = 'stretch'
   endif
+
+  assign columns_gap_mobile = section.settings.columns_gap_mobile | default: section.settings.columns_gap
+
+  assign show_dots = false
+  if section.settings.pagination == 'dots'
+    assign show_dots = true
+    assign slideshow_class = slideshow_class | append: ' carousel-content--dots'
+  endif
 -%}
+
+{% capture controls_content %}
+  {% if show_dots %}
+    {% render 'slideshow-controls',
+      style: 'dots',
+      item_count: slide_count,
+      show_arrows: false,
+      icon_style: 'none',
+      pagination_position: 'right'
+    %}
+  {% endif %}
+{% endcapture %}
 
 {% capture blocks_content %}
   {% content_for 'blocks' %}
@@ -35,6 +55,7 @@
   --carousel-columns: {{ section.settings.columns }};
   --carousel-mobile-columns: {{ section.settings.mobile_columns }};
   {% render 'gap-style', value: section.settings.columns_gap, name: 'carousel-gap' %}
+  {% render 'gap-style', value: columns_gap_mobile, name: 'carousel-gap-mobile' %}
   {% render 'spacing-style', settings: block.settings %}
   {% render 'border-override', settings: block.settings %}
 {% endcapture %}
@@ -56,29 +77,103 @@
     slide_count: slide_count,
     slide_position: slide_position,
     slideshow_gutters: slideshow_gutters,
+    controls: controls_content,
     attributes: block.shopify_attributes
   %}
 </div>
 
 {% stylesheet %}
   .carousel-content slideshow-slides {
-    --slideshow-gap: var(--carousel-gap);
+    --slideshow-gap: var(--carousel-gap-mobile, var(--carousel-gap));
   }
 
   .carousel-content slideshow-slides > .card {
     flex: 0 0 auto;
     width: calc(
-      (100% - (var(--carousel-gap, 8px) * (var(--carousel-mobile-columns, 2) - 1)) - var(--peek-next-slide-size, 0px)) /
+      (
+          100% - (var(--carousel-gap-mobile, var(--carousel-gap, 8px)) * (var(--carousel-mobile-columns, 2) - 1)) -
+            var(--peek-next-slide-size, 0px)
+        ) /
         var(--carousel-mobile-columns, 2)
     );
   }
 
   @media screen and (min-width: 750px) {
+    .carousel-content slideshow-slides {
+      --slideshow-gap: var(--carousel-gap);
+    }
+
     .carousel-content slideshow-slides > .card {
       width: calc(
         (100% - (var(--carousel-gap, 8px) * (var(--carousel-columns, 4) - 1)) - var(--peek-next-slide-size, 0px)) /
           var(--carousel-columns, 4)
       );
+    }
+  }
+
+  .carousel-content--dots slideshow-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-block-start: 32px;
+    padding-inline: var(--util-page-margin-offset);
+  }
+
+  .carousel-content--dots slideshow-controls:has(> .slideshow-controls__dots) {
+    mix-blend-mode: normal;
+  }
+
+  .carousel-content--dots .slideshow-controls__dots {
+    gap: 6px;
+    padding: 12px 16px;
+    margin-inline: 0;
+    margin-inline-start: auto;
+    border-radius: 0;
+  }
+
+  .carousel-content--dots .slideshow-controls__dots button {
+    --color: rgb(var(--color-foreground-rgb));
+    --color-active: rgb(var(--color-foreground-rgb));
+    --color-hover: rgb(var(--color-foreground-rgb));
+  }
+
+  .carousel-content--dots .slideshow-controls__dots button::after {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    box-shadow: none;
+    transition: width 0.2s ease;
+  }
+
+  .carousel-content--dots .slideshow-controls__dots button[aria-selected='true']::after {
+    width: 18px;
+    box-shadow: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .carousel-content--dots slideshow-controls {
+      margin-block-start: 48px;
+    }
+
+    .carousel-content--dots .slideshow-controls__dots {
+      gap: 8px;
+      padding: 16px 24px;
+    }
+
+    .carousel-content--dots .slideshow-controls__dots button::after {
+      width: 8px;
+      height: 8px;
+      border-radius: 4px;
+    }
+
+    .carousel-content--dots .slideshow-controls__dots button[aria-selected='true']::after {
+      width: 24px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-content--dots .slideshow-controls__dots button::after {
+      transition: none;
     }
   }
 
@@ -101,6 +196,9 @@
   "blocks": [
     {
       "type": "_card"
+    },
+    {
+      "type": "_review-card"
     }
   ],
   "tag": null,
