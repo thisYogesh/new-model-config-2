@@ -2,13 +2,54 @@
   {% content_for 'blocks' %}
 {% endcapture %}
 
+{%- liquid
+  assign group_extra_class = ''
+  assign group_extra_style = ''
+  if block.settings.visibility == 'desktop'
+    assign group_extra_class = 'group-block--hide-mobile'
+  elsif block.settings.visibility == 'mobile'
+    assign group_extra_class = 'group-block--hide-desktop'
+  endif
+  if block.settings.side_border == 'bottom' or block.settings.side_border == 'inline-start'
+    assign group_extra_class = group_extra_class | append: ' group-block--side-border-' | append: block.settings.side_border
+    if block.settings.side_border_color != blank
+      assign group_extra_style = '--side-border-color: ' | append: block.settings.side_border_color | append: ';'
+    endif
+  endif
+-%}
+
 {% render 'group',
   children: children,
   settings: block.settings,
   shopify_attributes: block.shopify_attributes,
   background_color: block.settings.background_color,
-  block_id: block.id
+  block_id: block.id,
+  class: group_extra_class,
+  style: group_extra_style
 %}
+
+{% stylesheet %}
+  @media screen and (max-width: 749px) {
+    .group-block.group-block--hide-mobile {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .group-block.group-block--hide-desktop {
+      display: none;
+    }
+  }
+
+  /* Doubled class so the single-side line beats the global .border-style reset. */
+  .group-block.group-block--side-border-bottom {
+    border-bottom: 1px solid var(--side-border-color, currentcolor);
+  }
+
+  .group-block.group-block--side-border-inline-start {
+    border-inline-start: 1px solid var(--side-border-color, currentcolor);
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
@@ -462,6 +503,57 @@
       "id": "placeholder",
       "label": "t:settings.image",
       "visible_if": "{{ false }}"
+    },
+    {
+      "type": "header",
+      "content": "Display"
+    },
+    {
+      "type": "select",
+      "id": "visibility",
+      "label": "Visibility",
+      "options": [
+        {
+          "value": "all",
+          "label": "All devices"
+        },
+        {
+          "value": "desktop",
+          "label": "Desktop only"
+        },
+        {
+          "value": "mobile",
+          "label": "Mobile only"
+        }
+      ],
+      "default": "all"
+    },
+    {
+      "type": "select",
+      "id": "side_border",
+      "label": "Divider line",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        },
+        {
+          "value": "inline-start",
+          "label": "Start side"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "color",
+      "id": "side_border_color",
+      "label": "Divider line color",
+      "default": "#231F20",
+      "visible_if": "{{ block.settings.side_border != 'none' }}"
     },
     {
       "type": "header",
