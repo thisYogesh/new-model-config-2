@@ -1,0 +1,480 @@
+{%- liquid
+  assign features = section.blocks | where: 'type', 'feature'
+  assign brands = section.blocks | where: 'type', 'brand'
+-%}
+
+<div
+  class="comparison-table spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %} --comparison-bg: {{ section.settings.background_color }};"
+>
+  <div class="comparison-table__inner">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="comparison-table__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if brands.size > 0 -%}
+      <div class="comparison-table__scroll">
+        <table class="comparison-table__table">
+          <thead>
+            <tr class="comparison-table__row comparison-table__row--logos">
+              <td class="comparison-table__label comparison-table__label--empty"></td>
+              {%- for brand in brands -%}
+                <th
+                  scope="col"
+                  class="comparison-table__cell comparison-table__cell--logo{% if brand.settings.highlight %} comparison-table__cell--highlight comparison-table__cell--highlight-first{% endif %}"
+                  style="--logo-width: {{ brand.settings.logo_width }}px; --logo-opacity: {{ brand.settings.logo_opacity | divided_by: 100.0 }};"
+                  {{ brand.shopify_attributes }}
+                >
+                  <span class="comparison-table__logo">
+                    {%- if brand.settings.logo != blank -%}
+                      {{
+                        brand.settings.logo
+                        | image_url: width: 240
+                        | image_tag: loading: 'lazy', alt: brand.settings.logo_alt, class: 'comparison-table__logo-image'
+                      }}
+                    {%- elsif brand.settings.logo_svg != blank -%}
+                      <span class="comparison-table__logo-svg" role="img" aria-label="{{ brand.settings.logo_alt | escape }}">
+                        {{- brand.settings.logo_svg | inline_asset_content -}}
+                      </span>
+                    {%- else -%}
+                      <span class="comparison-table__logo-text">{{ brand.settings.logo_alt }}</span>
+                    {%- endif -%}
+                  </span>
+                </th>
+              {%- endfor -%}
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="comparison-table__row comparison-table__row--format">
+              <th scope="row" class="comparison-table__label">{{ section.settings.format_label }}</th>
+              {%- for brand in brands -%}
+                <td class="comparison-table__cell comparison-table__cell--format{% if brand.settings.highlight %} comparison-table__cell--highlight{% else %} comparison-table__cell--competitor{% endif %}">
+                  <span class="comparison-table__format">{{ brand.settings.format }}</span>
+                </td>
+              {%- endfor -%}
+            </tr>
+
+            {%- for feature in features -%}
+              {%- assign feature_index = forloop.index0 -%}
+              <tr class="comparison-table__row{% if forloop.last %} comparison-table__row--last{% endif %}">
+                <th scope="row" class="comparison-table__label" {{ feature.shopify_attributes }}>
+                  {{- feature.settings.label -}}
+                </th>
+                {%- for brand in brands -%}
+                  {%- liquid
+                    assign results = brand.settings.results | split: ','
+                    assign result = results[feature_index] | strip | downcase
+                  -%}
+                  <td class="comparison-table__cell{% if brand.settings.highlight %} comparison-table__cell--highlight{% else %} comparison-table__cell--competitor{% endif %}">
+                    {%- if result == 'yes' -%}
+                      <span class="comparison-table__icon comparison-table__icon--yes" aria-hidden="true">
+                        {{- 'icon-check-large-3.svg' | inline_asset_content -}}
+                      </span>
+                      <span class="visually-hidden">Yes</span>
+                    {%- else -%}
+                      <span class="comparison-table__icon comparison-table__icon--no" aria-hidden="true">
+                        {{- 'icon-close-large.svg' | inline_asset_content -}}
+                      </span>
+                      <span class="visually-hidden">No</span>
+                    {%- endif -%}
+                  </td>
+                {%- endfor -%}
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.footnote != blank -%}
+      <div class="comparison-table__footnote rte">{{ section.settings.footnote }}</div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .comparison-table {
+    background: var(--comparison-bg, #fcf9f5);
+    color: #231f20;
+    padding-inline: 20px;
+  }
+
+  .comparison-table__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    max-width: 1344px;
+    margin-inline: auto;
+  }
+
+  .comparison-table__heading {
+    margin: 0;
+    padding-block-start: 24px;
+    font-family: var(--font-heading--family);
+    font-weight: 800;
+    font-size: 40px;
+    line-height: 40px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    text-align: start;
+    color: #231f20;
+  }
+
+  .comparison-table__scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-inline-end: -20px;
+  }
+
+  .comparison-table__table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    min-width: max-content;
+  }
+
+  .comparison-table__label {
+    position: sticky;
+    inset-inline-start: 0;
+    z-index: 1;
+    width: 136px;
+    min-width: 136px;
+    max-width: 136px;
+    padding-block: 24px;
+    padding-inline: 0 12px;
+    text-align: start;
+    vertical-align: middle;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.14px;
+    color: #231f20;
+    background: var(--comparison-bg, #fcf9f5);
+    border-bottom: 1px solid rgb(35 31 32 / 0.15);
+    overflow-wrap: break-word;
+  }
+
+  .comparison-table__cell {
+    width: 108px;
+    min-width: 108px;
+    height: 72px;
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid rgb(35 31 32 / 0.15);
+  }
+
+  .comparison-table__cell--competitor,
+  .comparison-table__cell--logo:not(.comparison-table__cell--highlight) {
+    border-inline-end: 1px solid rgb(35 31 32 / 0.15);
+  }
+
+  .comparison-table__cell--logo {
+    height: 80px;
+  }
+
+  .comparison-table__cell--highlight {
+    background: #9bd7d7;
+    color: #231f20;
+    border-bottom-color: transparent;
+  }
+
+  .comparison-table__cell--highlight-first {
+    border-radius: 2px 2px 0 0;
+  }
+
+  .comparison-table__row--last .comparison-table__cell--highlight {
+    border-radius: 0 0 2px 2px;
+  }
+
+  .comparison-table__row--last .comparison-table__cell {
+    height: 72px;
+  }
+
+  .comparison-table__logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    opacity: var(--logo-opacity, 1);
+  }
+
+  .comparison-table__logo-image,
+  .comparison-table__logo-svg {
+    display: block;
+    width: var(--logo-width, 72px);
+    max-width: 100%;
+    height: auto;
+  }
+
+  .comparison-table__logo-svg svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .comparison-table__logo-text {
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .comparison-table__format {
+    display: block;
+    padding-inline: 8px;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    text-align: center;
+    white-space: pre-line;
+  }
+
+  .comparison-table__cell--competitor .comparison-table__format,
+  .comparison-table__cell--competitor .comparison-table__icon--yes {
+    opacity: 0.5;
+  }
+
+  .comparison-table__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+
+    & svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .comparison-table__footnote {
+    padding-block: 32px;
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    color: rgb(35 31 32 / 0.5);
+
+    & p {
+      margin: 0;
+      font-size: inherit;
+      line-height: inherit;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .comparison-table {
+      padding-block: 20px;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .comparison-table {
+      padding-inline: 48px;
+    }
+
+    .comparison-table__inner {
+      gap: 60px;
+    }
+
+    .comparison-table__heading {
+      font-size: 56px;
+      line-height: 56px;
+      text-align: center;
+    }
+
+    .comparison-table__scroll {
+      margin-inline-end: 0;
+    }
+
+    .comparison-table__label {
+      position: static;
+      width: auto;
+      min-width: 197px;
+      max-width: none;
+    }
+
+    .comparison-table__label--empty,
+    .comparison-table__row .comparison-table__label {
+      padding-inline-end: 24px;
+    }
+
+    .comparison-table__cell {
+      width: 115px;
+      min-width: 115px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Comparison table",
+  "tag": "section",
+  "class": "comparison-table-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How We Compare"
+    },
+    {
+      "type": "text",
+      "id": "format_label",
+      "label": "Format row label",
+      "default": "Format"
+    },
+    {
+      "type": "richtext",
+      "id": "footnote",
+      "label": "Footnote",
+      "default": "<p>† Better stain removal on the most consumer-relevant stains.  * Applies to Sensitive Skin and Free + Clear Unscented Laundry Detergents. Recognized by the National Eczema Association and National Psoriasis Foundation.  ¶ Requires both USDA Certified Biobased Product and Leaping Bunny Cruelty-free certification to receive a checkmark.  ‡ Tablets, powders, and sheets require direct hand contact with formula at time of use. Dropps pod film dissolves completely in the wash cycle — formula never contacts skin during handling.  § Some competitor packaging is industrially compostable, which requires composting facility access — not curbside recyclable. Certification and manufacturing data sourced from brand websites, June 2026.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FCF9F5"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Feature"
+        }
+      ]
+    },
+    {
+      "type": "brand",
+      "name": "Brand column",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo"
+        },
+        {
+          "type": "text",
+          "id": "logo_svg",
+          "label": "Logo SVG asset",
+          "info": "Theme asset filename used when no logo image is set, e.g. dropps-logo.svg"
+        },
+        {
+          "type": "text",
+          "id": "logo_alt",
+          "label": "Brand name",
+          "default": "Brand"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "label": "Logo width",
+          "min": 20,
+          "max": 120,
+          "step": 1,
+          "unit": "px",
+          "default": 72
+        },
+        {
+          "type": "range",
+          "id": "logo_opacity",
+          "label": "Logo opacity",
+          "min": 10,
+          "max": 100,
+          "step": 10,
+          "unit": "%",
+          "default": 100
+        },
+        {
+          "type": "text",
+          "id": "format",
+          "label": "Format",
+          "default": "Tablet"
+        },
+        {
+          "type": "text",
+          "id": "results",
+          "label": "Results",
+          "info": "Comma-separated yes/no values, one per feature row in order",
+          "default": "yes,yes,yes,yes,yes,yes,yes"
+        },
+        {
+          "type": "checkbox",
+          "id": "highlight",
+          "label": "Highlight column",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comparison table",
+      "category": "Text",
+      "blocks": [
+        { "type": "feature", "settings": { "label": "Superior Cleaning" } },
+        { "type": "feature", "settings": { "label": "Certified B Corp" } },
+        {
+          "type": "brand",
+          "settings": {
+            "logo_svg": "dropps-logo.svg",
+            "logo_alt": "Dropps",
+            "format": "Liquid Pod",
+            "results": "yes,yes",
+            "highlight": true
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "logo_alt": "Competitor",
+            "format": "Tablet",
+            "results": "no,yes"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
