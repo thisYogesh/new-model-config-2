@@ -406,10 +406,165 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "comparison_table": {
+      "type": "comparison-table",
+      "blocks": {
+        "feature_1": {
+          "type": "feature",
+          "settings": {
+            "label": "Superior Cleaning 1"
+          }
+        },
+        "feature_2": {
+          "type": "feature",
+          "settings": {
+            "label": "Gentle for both eczema and psoriasis*"
+          }
+        },
+        "feature_3": {
+          "type": "feature",
+          "settings": {
+            "label": "USDA Certified Biobased & Leaping Bunny Certified"
+          }
+        },
+        "feature_4": {
+          "type": "feature",
+          "settings": {
+            "label": "Certified B Corp"
+          }
+        },
+        "feature_5": {
+          "type": "feature",
+          "settings": {
+            "label": "No skin contact during handling"
+          }
+        },
+        "feature_6": {
+          "type": "feature",
+          "settings": {
+            "label": "Curbside-recyclable paperboard & packaging"
+          }
+        },
+        "feature_7": {
+          "type": "feature",
+          "settings": {
+            "label": "Formulated & manufactured in the USA"
+          }
+        },
+        "dropps": {
+          "type": "brand",
+          "settings": {
+            "logo_svg": "dropps-logo.svg",
+            "logo_alt": "Dropps",
+            "logo_width": 72,
+            "logo_opacity": 100,
+            "format": "Liquid Pod",
+            "results": "yes,yes,yes,yes,yes,yes,yes",
+            "highlight": true
+          }
+        },
+        "blueland": {
+          "type": "brand",
+          "settings": {
+            "logo_svg": "logo-container.svg",
+            "logo_alt": "Blueland",
+            "logo_width": 115,
+            "logo_opacity": 100,
+            "format": "Tablet",
+            "results": "no,no,yes,yes,no,no,yes",
+            "highlight": false
+          }
+        },
+        "seventh_generation": {
+          "type": "brand",
+          "settings": {
+            "logo": "shopify://shop_images/seventh-generation-1-mobile-52628908.png",
+            "logo_alt": "Seventh Generation",
+            "logo_width": 71,
+            "logo_opacity": 50,
+            "format": "Powder Pod",
+            "results": "no,no,no,yes,no,no,yes",
+            "highlight": false
+          }
+        },
+        "mollys_suds": {
+          "type": "brand",
+          "settings": {
+            "logo": "shopify://shop_images/ms-logo-transparent-220x-2x-bfc196b7-d70e-4285-b0be-b06ec38c233b-1-mobile-52628920.png",
+            "logo_alt": "Molly's Suds",
+            "logo_width": 49,
+            "logo_opacity": 40,
+            "format": "Powder Pod",
+            "results": "no,no,no,no,yes,no,yes",
+            "highlight": false
+          }
+        },
+        "cascade": {
+          "type": "brand",
+          "settings": {
+            "logo": "shopify://shop_images/logo-1-mobile-52628932.png",
+            "logo_alt": "Cascade",
+            "logo_width": 59,
+            "logo_opacity": 80,
+            "format": "Liquid &\nPowder Pod",
+            "results": "yes,yes,no,no,yes,no,yes",
+            "highlight": false
+          }
+        },
+        "finish": {
+          "type": "brand",
+          "settings": {
+            "logo": "shopify://shop_images/main-logo-1-mobile-52628944.png",
+            "logo_alt": "Finish",
+            "logo_width": 56,
+            "logo_opacity": 70,
+            "format": "Liquid &\nPowder Pod",
+            "results": "yes,no,no,no,no,yes,no",
+            "highlight": false
+          }
+        },
+        "method": {
+          "type": "brand",
+          "settings": {
+            "logo": "shopify://shop_images/61x-sktjoal-ac-sf462-108-1-mobile-52628956.png",
+            "logo_alt": "Method",
+            "logo_width": 72,
+            "logo_opacity": 80,
+            "format": "Tablet",
+            "results": "no,no,no,no,no,yes,no",
+            "highlight": false
+          }
+        }
+      },
+      "block_order": [
+        "feature_1",
+        "feature_2",
+        "feature_3",
+        "feature_4",
+        "feature_5",
+        "feature_6",
+        "feature_7",
+        "dropps",
+        "blueland",
+        "seventh_generation",
+        "mollys_suds",
+        "cascade",
+        "finish",
+        "method"
+      ],
+      "settings": {
+        "heading": "How We Compare",
+        "format_label": "Format",
+        "background_color": "#FCF9F5",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
     }
   },
   "order": [
     "main",
+    "comparison_table",
     "product_recommendations_qggXJq"
   ]
 }
