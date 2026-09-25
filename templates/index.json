@@ -474,7 +474,7 @@
                 "card_variant_label": {
                   "type": "text",
                   "settings": {
-                    "text": "<p>{{ closest.product.selected_or_first_available_variant.title }}</p>",
+                    "text": "<p>{{ closest.product.type }}</p>",
                     "width": "fit-content",
                     "max_width": "normal",
                     "alignment": "left",
