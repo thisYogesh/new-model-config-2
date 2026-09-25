@@ -1896,10 +1896,25 @@
                           },
                           "blocks": {
                             "mbadge_epa_image": {
-                              "type": "custom-liquid",
+                              "type": "image",
                               "settings": {
-                                "custom_liquid": "<img src=\"{{ 'wrapper-2.svg' | asset_url }}\" alt=\"EPA Safer Choice\" width=\"72\" height=\"72\" loading=\"lazy\" style=\"display:block;width:72px;height:72px;object-fit:contain;\">"
-                              }
+                                "image": "shopify://shop_images/epa-badge-white-2-mobile-5978314.png",
+                                "image_ratio": "adapt",
+                                "width": "fit-content",
+                                "custom_width": 100,
+                                "width_mobile": "fit-content",
+                                "custom_width_mobile": 100,
+                                "height": "fit",
+                                "border": "none",
+                                "border_width": 1,
+                                "border_opacity": 100,
+                                "border_radius": 0,
+                                "padding-block-start": 0,
+                                "padding-block-end": 0,
+                                "padding-inline-start": 0,
+                                "padding-inline-end": 0
+                              },
+                              "blocks": {}
                             }
                           },
                           "block_order": [
@@ -1945,10 +1960,25 @@
                           },
                           "blocks": {
                             "mbadge_bunny_image": {
-                              "type": "custom-liquid",
+                              "type": "image",
                               "settings": {
-                                "custom_liquid": "<img src=\"{{ 'wrapper-3.svg' | asset_url }}\" alt=\"Leaping Bunny\" width=\"72\" height=\"72\" loading=\"lazy\" style=\"display:block;width:72px;height:72px;object-fit:contain;\">"
-                              }
+                                "image": "shopify://shop_images/img-3664-2-1-mobile-5978318.png",
+                                "image_ratio": "adapt",
+                                "width": "fit-content",
+                                "custom_width": 100,
+                                "width_mobile": "fit-content",
+                                "custom_width_mobile": 100,
+                                "height": "fit",
+                                "border": "none",
+                                "border_width": 1,
+                                "border_opacity": 100,
+                                "border_radius": 0,
+                                "padding-block-start": 0,
+                                "padding-block-end": 0,
+                                "padding-inline-start": 0,
+                                "padding-inline-end": 0
+                              },
+                              "blocks": {}
                             }
                           },
                           "block_order": [
@@ -2120,10 +2150,25 @@
                       },
                       "blocks": {
                         "badge_bunny_image": {
-                          "type": "custom-liquid",
+                          "type": "image",
                           "settings": {
-                            "custom_liquid": "<img src=\"{{ 'wrapper-3.svg' | asset_url }}\" alt=\"Leaping Bunny\" width=\"72\" height=\"72\" loading=\"lazy\" style=\"display:block;width:72px;height:72px;object-fit:contain;\">"
-                          }
+                            "image": "shopify://shop_images/img-3664-2-1-mobile-5978318.png",
+                            "image_ratio": "adapt",
+                            "width": "fit-content",
+                            "custom_width": 100,
+                            "width_mobile": "fit-content",
+                            "custom_width_mobile": 100,
+                            "height": "fit",
+                            "border": "none",
+                            "border_width": 1,
+                            "border_opacity": 100,
+                            "border_radius": 0,
+                            "padding-block-start": 0,
+                            "padding-block-end": 0,
+                            "padding-inline-start": 0,
+                            "padding-inline-end": 0
+                          },
+                          "blocks": {}
                         },
                         "badge_bunny_caption": {
                           "type": "text",
@@ -2194,10 +2239,25 @@
                       },
                       "blocks": {
                         "badge_epa_image": {
-                          "type": "custom-liquid",
+                          "type": "image",
                           "settings": {
-                            "custom_liquid": "<img src=\"{{ 'wrapper-2.svg' | asset_url }}\" alt=\"EPA Safer Choice\" width=\"72\" height=\"72\" loading=\"lazy\" style=\"display:block;width:72px;height:72px;object-fit:contain;\">"
-                          }
+                            "image": "shopify://shop_images/epa-badge-white-2-mobile-5978314.png",
+                            "image_ratio": "adapt",
+                            "width": "fit-content",
+                            "custom_width": 100,
+                            "width_mobile": "fit-content",
+                            "custom_width_mobile": 100,
+                            "height": "fit",
+                            "border": "none",
+                            "border_width": 1,
+                            "border_opacity": 100,
+                            "border_radius": 0,
+                            "padding-block-start": 0,
+                            "padding-block-end": 0,
+                            "padding-inline-start": 0,
+                            "padding-inline-end": 0
+                          },
+                          "blocks": {}
                         },
                         "badge_epa_caption": {
                           "type": "text",
