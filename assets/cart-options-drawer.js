@@ -69,7 +69,11 @@ class CartOptionsDrawer extends DialogComponent {
    */
   openForProduct(event) {
     event.preventDefault();
-    const trigger = /** @type {HTMLElement | null} */ (event.currentTarget instanceof HTMLElement ? event.currentTarget : null);
+    // Events are delegated from `document` (component.js), so `currentTarget` is the document.
+    // The proxied `event.target` is the element carrying the `on:click` attribute.
+    const trigger = /** @type {HTMLElement | null} */ (
+      event.target instanceof HTMLElement ? event.target.closest('[data-product-url]') : null
+    );
     if (!trigger) return;
 
     this.#mode = 'add';
@@ -87,7 +91,11 @@ class CartOptionsDrawer extends DialogComponent {
    */
   openForLine(event) {
     event.preventDefault();
-    const trigger = /** @type {HTMLElement | null} */ (event.currentTarget instanceof HTMLElement ? event.currentTarget : null);
+    // Events are delegated from `document` (component.js), so `currentTarget` is the document.
+    // The proxied `event.target` is the element carrying the `on:click` attribute.
+    const trigger = /** @type {HTMLElement | null} */ (
+      event.target instanceof HTMLElement ? event.target.closest('[data-product-url]') : null
+    );
     if (!trigger) return;
 
     this.#mode = 'line';
