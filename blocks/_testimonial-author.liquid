@@ -1,0 +1,144 @@
+{%- liquid
+  assign icon_svg = ''
+  if block.settings.show_icon
+    assign icon_svg = 'check-circle-2.svg' | inline_asset_content
+    if block.settings.icon_color != blank
+      assign icon_svg = icon_svg | replace: '#E9EA6B', block.settings.icon_color
+    endif
+  endif
+-%}
+
+<div
+  class="testimonial-author"
+  style="--testimonial-author-color: {{ block.settings.text_color | default: '#FCF9F5' }};"
+  {{ block.shopify_attributes }}
+>
+  <div class="testimonial-author__row">
+    {%- if icon_svg != blank -%}
+      <span class="testimonial-author__icon" aria-hidden="true">{{ icon_svg }}</span>
+    {%- endif -%}
+    {%- if block.settings.author != blank -%}
+      <span class="testimonial-author__name">{{ block.settings.author }}</span>
+    {%- endif -%}
+  </div>
+
+  {%- if block.settings.product_label != blank -%}
+    {%- if block.settings.product_link != blank -%}
+      <a class="testimonial-author__product" href="{{ block.settings.product_link }}">
+        {{- block.settings.product_label -}}
+      </a>
+    {%- else -%}
+      <span class="testimonial-author__product">{{ block.settings.product_label }}</span>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .testimonial-author {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--testimonial-author-color, #fcf9f5);
+  }
+
+  .testimonial-author__row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .testimonial-author__icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 21px;
+    height: 21px;
+  }
+
+  .testimonial-author__icon svg {
+    display: block;
+    width: 21px;
+    height: 21px;
+  }
+
+  .testimonial-author__name {
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 1px;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--testimonial-author-color, #fcf9f5);
+  }
+
+  .testimonial-author__product {
+    font-family: var(--font-body--family);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+    letter-spacing: 0.14px;
+    text-align: center;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    color: var(--testimonial-author-color, #fcf9f5);
+  }
+
+  a.testimonial-author__product:hover {
+    text-decoration: underline;
+    opacity: 0.75;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Testimonial author",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Author name",
+      "default": "Kathy F"
+    },
+    {
+      "type": "text",
+      "id": "product_label",
+      "label": "Product label",
+      "default": "Stain & Odor Laundry Pods"
+    },
+    {
+      "type": "url",
+      "id": "product_link",
+      "label": "Product link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Verified icon",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#E9EA6B"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#FCF9F5"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonial author"
+    }
+  ]
+}
+{% endschema %}

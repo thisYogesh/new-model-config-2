@@ -184,6 +184,19 @@
   slideshow-slide .slide__image-container--rounded {
     border-radius: var(--corner-radius, 0);
   }
+
+  /* Beside media (split) layout — the slide content becomes a centered grid cell. */
+  .slideshow--content-beside-media .slide__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+  }
+
+  .slideshow--content-beside-media .slide__content > .group-block-content {
+    max-width: 500px;
+    margin-inline: auto;
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -214,6 +227,12 @@
     },
     {
       "type": "jumbo-text"
+    },
+    {
+      "type": "_testimonial-rating"
+    },
+    {
+      "type": "_testimonial-author"
     },
     {
       "type": "@theme"

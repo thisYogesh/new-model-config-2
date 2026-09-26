@@ -1,0 +1,84 @@
+{%- liquid
+  assign rating = block.settings.rating | default: 5
+  assign star_size = block.settings.star_size | default: 14
+-%}
+
+<div
+  class="testimonial-rating"
+  style="--testimonial-star-size: {{ star_size }}px; --testimonial-star-color: {{ block.settings.star_color | default: '#FCF9F5' }};"
+  role="img"
+  aria-label="Rated {{ rating }} out of 5 stars"
+  {{ block.shopify_attributes }}
+>
+  {%- for i in (1..rating) -%}
+    <svg
+      class="testimonial-rating__star"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 14 14"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M7 11.2516L11.326 14L10.178 8.82L14 5.33474L8.967 4.88526L7 0L5.033 4.88526L0 5.33474L3.822 8.82L2.674 14L7 11.2516Z"
+        fill="currentColor"
+      />
+    </svg>
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+  .testimonial-rating {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    color: var(--testimonial-star-color, #fcf9f5);
+  }
+
+  .testimonial-rating__star {
+    display: block;
+    flex: none;
+    width: var(--testimonial-star-size, 14px);
+    height: var(--testimonial-star-size, 14px);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Testimonial rating",
+  "tag": null,
+  "settings": [
+    {
+      "type": "range",
+      "id": "rating",
+      "label": "Rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "label": "Star size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star color",
+      "default": "#FCF9F5"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonial rating"
+    }
+  ]
+}
+{% endschema %}

@@ -57,6 +57,19 @@
   elsif section.settings.display_mode == 'with_hints' and section.settings.full_frame_on_mobile == false
     assign rounded_slide_corners = true
   endif
+
+  assign beside_media_style = ''
+  if section.settings.content_position == 'beside-media'
+    if section.settings.media_position == 'left'
+      assign beside_media_style = ' --media-order: 1; --content-order: 2; --media-padding-inline-start: 48px; --media-padding-inline-end: 16px; --controls-inline-start: auto; --controls-inline-end: 0;'
+    else
+      assign beside_media_style = ' --media-order: 2; --content-order: 1; --media-padding-inline-start: 16px; --media-padding-inline-end: 48px; --controls-inline-start: 0; --controls-inline-end: auto;'
+    endif
+    if section.settings.pagination_color != blank
+      assign pagination_color_var = ' --slideshow-pagination-color: ' | append: section.settings.pagination_color | append: ';'
+      assign beside_media_style = beside_media_style | append: pagination_color_var
+    endif
+  endif
 %}
 
 {% liquid
@@ -74,7 +87,7 @@
 ></div>
 <div
   class="slideshow-section spacing-style section {{ section_width_class }}{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %} disable-section-top-offset"
-  style="{% render 'spacing-padding', settings: section.settings %}; --slideshow-gap: {{ section.settings.slideshow_gap }}px;{% if rounded_slide_corners %} --corner-radius: {{ section.settings.corner_radius }}px;{% endif %}"
+  style="{% render 'spacing-padding', settings: section.settings %}; --slideshow-gap: {{ section.settings.slideshow_gap }}px;{% if rounded_slide_corners %} --corner-radius: {{ section.settings.corner_radius }}px;{% endif %}{{ beside_media_style }}"
 >
   <h2 class="visually-hidden">{{ 'accessibility.slideshow' | t }}</h2>
   {% render 'slideshow',
@@ -174,6 +187,147 @@
         animation: none;
         opacity: 0;
         pointer-events: none;
+      }
+    }
+
+    /*
+     * Beside media (split) layout.
+     * Scoped to .slideshow--content-beside-media so the on-media / below-media
+     * layouts are untouched.
+     */
+    .slideshow--content-beside-media slideshow-slide {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      align-items: center;
+    }
+
+    .slideshow--content-beside-media slideshow-slide > .slide__image-container {
+      position: relative;
+      display: block;
+      order: 1;
+      width: 100%;
+      height: auto;
+      padding-inline: 30px;
+    }
+
+    .slideshow--content-beside-media .slide__image-container > :is(.slide__image, .slide__video, .slide__video-poster) {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+    }
+
+    .slideshow--content-beside-media .slide__content {
+      order: 2;
+
+      /* Reserve room for the absolutely positioned pagination dots. */
+      padding-block-end: calc(var(--padding-block-end, 0px) + 70px);
+    }
+
+    .slideshow--content-beside-media .slide__content h2 {
+      font-size: 40px;
+      line-height: 40px;
+      letter-spacing: -1.2px;
+    }
+
+    .slideshow--content-beside-media .slide__content p {
+      line-height: 20px;
+    }
+
+    .slideshow--content-beside-media slideshow-controls:has(> .slideshow-controls__dots) {
+      mix-blend-mode: normal;
+    }
+
+    .slideshow--content-beside-media slideshow-controls[controls-on-media][pagination-position='center'] {
+      width: 100%;
+      inset-inline-start: 0;
+      inset-inline-end: 0;
+      bottom: 0;
+    }
+
+    .slideshow--content-beside-media .slideshow-controls__dots {
+      gap: 6px;
+      padding: 12px 16px;
+    }
+
+    .slideshow--content-beside-media .slideshow-controls__dots button {
+      --size: 6px;
+      --color: var(--slideshow-pagination-color, #f1e8da);
+      --color-active: var(--slideshow-pagination-color, #f1e8da);
+      --color-hover: var(--slideshow-pagination-color, #f1e8da);
+
+      height: var(--size);
+    }
+
+    .slideshow--content-beside-media .slideshow-controls__dots button::after {
+      flex: none;
+      box-shadow: none;
+      opacity: 0.4;
+    }
+
+    .slideshow--content-beside-media .slideshow-controls__dots button[aria-selected='true'] {
+      width: 24px;
+    }
+
+    .slideshow--content-beside-media .slideshow-controls__dots button[aria-selected='true']::after {
+      width: 18px;
+      border-radius: 3px;
+      opacity: 1;
+    }
+
+    @media screen and (min-width: 750px) {
+      .slideshow--content-beside-media slideshow-slide {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+        align-items: stretch;
+      }
+
+      .slideshow--content-beside-media slideshow-slide > .slide__image-container {
+        order: var(--media-order, 2);
+        align-self: center;
+        padding-inline: var(--media-padding-inline-start, 16px) var(--media-padding-inline-end, 48px);
+      }
+
+      .slideshow--content-beside-media
+        .slide__image-container
+        > :is(.slide__image, .slide__video, .slide__video-poster) {
+        aspect-ratio: 656 / 624;
+      }
+
+      .slideshow--content-beside-media .slide__content {
+        order: var(--content-order, 1);
+      }
+
+      .slideshow--content-beside-media .slide__content h2 {
+        font-size: inherit;
+        line-height: 1;
+        letter-spacing: -0.03em;
+      }
+
+      .slideshow--content-beside-media slideshow-controls[controls-on-media][pagination-position='center'] {
+        width: 50%;
+        inset-inline-start: var(--controls-inline-start, 0);
+        inset-inline-end: var(--controls-inline-end, auto);
+        bottom: 48px;
+      }
+
+      .slideshow--content-beside-media .slideshow-controls__dots {
+        gap: 8px;
+        padding: 16px 24px;
+      }
+
+      .slideshow--content-beside-media .slideshow-controls__dots button {
+        --size: 8px;
+      }
+
+      .slideshow--content-beside-media .slideshow-controls__dots button[aria-selected='true'] {
+        width: 32px;
+      }
+
+      .slideshow--content-beside-media .slideshow-controls__dots button[aria-selected='true']::after {
+        width: 24px;
+        border-radius: 4px;
       }
     }
   }
@@ -290,15 +444,43 @@
         {
           "value": "below-media",
           "label": "t:options.below_media"
+        },
+        {
+          "value": "beside-media",
+          "label": "Beside media"
         }
       ],
       "default": "on-media"
+    },
+    {
+      "type": "select",
+      "id": "media_position",
+      "label": "Media position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "right",
+      "visible_if": "{{ section.settings.content_position == 'beside-media' }}"
     },
     {
       "type": "color",
       "id": "background_color",
       "label": "t:settings.background_color",
       "placeholder": "t:settings.default"
+    },
+    {
+      "type": "color",
+      "id": "pagination_color",
+      "label": "Pagination color",
+      "placeholder": "t:settings.default",
+      "visible_if": "{{ section.settings.content_position == 'beside-media' }}"
     },
     {
       "type": "header",
