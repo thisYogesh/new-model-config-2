@@ -1618,6 +1618,104 @@
         "step": 1,
         "unit": "px",
         "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Cart drawer design"
+      },
+      {
+        "type": "text",
+        "id": "empty_cart_button_label",
+        "label": "Empty cart button label",
+        "default": "Shop Best Sellers"
+      },
+      {
+        "type": "collection",
+        "id": "cart_upsell_collection",
+        "label": "Cart drawer upsell collection"
+      },
+      {
+        "type": "range",
+        "id": "cart_upsell_limit",
+        "label": "Upsell products limit",
+        "min": 2,
+        "max": 8,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_heading_empty",
+        "label": "Upsell heading (empty cart)",
+        "default": "Best Sellers"
+      },
+      {
+        "type": "text",
+        "id": "cart_upsell_heading_fallback",
+        "label": "Upsell heading (fallback)",
+        "default": "You may also like"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_bundle_enabled",
+        "label": "Show bundle discount progress",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "cart_bundle_tier_1_qty",
+        "label": "Bundle tier 1 quantity",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "default": 2
+      },
+      {
+        "type": "range",
+        "id": "cart_bundle_tier_1_pct",
+        "label": "Bundle tier 1 discount",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "%",
+        "default": 5
+      },
+      {
+        "type": "range",
+        "id": "cart_bundle_tier_2_qty",
+        "label": "Bundle tier 2 quantity",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "range",
+        "id": "cart_bundle_tier_2_pct",
+        "label": "Bundle tier 2 discount",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "%",
+        "default": 10
+      },
+      {
+        "type": "text",
+        "id": "cart_bundle_badge_none",
+        "label": "Bundle badge (no discount)",
+        "default": "No bundle discount yet"
+      },
+      {
+        "type": "text",
+        "id": "cart_drawer_shipping_note",
+        "label": "Shipping note",
+        "default": "Free shipping over $35 | 30 Day Money-Back Guarantee"
+      },
+      {
+        "type": "text",
+        "id": "cart_subscription_label",
+        "label": "Subscription label",
+        "default": "Subscribe & Save"
       }
     ]
   },

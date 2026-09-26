@@ -1,0 +1,192 @@
+{% doc %}
+  Renders the "Subscribe & Save" box with a toggle switch for a cart line item.
+  Only outputs markup when the product has native selling plans.
+
+  @param {object} item - The cart line item.
+
+  @example
+  {% render 'cart-line-subscription', item: item %}
+{% enddoc %}
+
+{%- if item.product.selling_plan_groups.size > 0 -%}
+  {%- liquid
+    assign first_plan = item.product.selling_plan_groups.first.selling_plans.first
+    assign active_plan = item.selling_plan_allocation.selling_plan
+    assign plan_id = first_plan.id
+    if active_plan
+      assign plan_id = active_plan.id
+    endif
+
+    assign reference_plan = first_plan
+    if active_plan
+      assign reference_plan = active_plan
+    endif
+    assign adjustment = reference_plan.price_adjustments.first
+    assign plan_pct = nil
+    if adjustment.value_type == 'percentage'
+      assign plan_pct = adjustment.value
+    endif
+
+    assign plan_name = first_plan.name
+    if active_plan
+      assign plan_name = active_plan.name
+    endif
+  -%}
+
+  <script
+    type="module"
+    src="{{ 'cart-line-subscription.js' | asset_url }}"
+    fetchpriority="low"
+  ></script>
+
+  <cart-line-subscription
+    class="cart-line-subscription"
+    data-line-key="{{ item.key }}"
+    data-quantity="{{ item.quantity }}"
+    data-selling-plan-id="{{ plan_id }}"
+  >
+    <div class="cart-line-subscription__details">
+      <span class="cart-line-subscription__title">
+        {{- settings.cart_subscription_label -}}
+        {%- if plan_pct != blank %} <span class="cart-line-subscription__discount">- {{ plan_pct }}% off</span>{% endif -%}
+      </span>
+      <span class="cart-line-subscription__hint">Auto-delivery every</span>
+      <span class="cart-line-subscription__plan{% if active_plan %} cart-line-subscription__plan--active{% endif %}">
+        {{- plan_name -}}
+      </span>
+    </div>
+    <label class="cart-line-subscription__toggle">
+      <input
+        type="checkbox"
+        class="cart-line-subscription__input visually-hidden"
+        role="switch"
+        ref="toggle"
+        on:change="/toggleSubscription"
+        aria-label="Toggle subscription"
+        {% if active_plan %}
+          checked
+        {% endif %}
+      >
+      <span class="cart-line-subscription__track"></span>
+    </label>
+  </cart-line-subscription>
+{%- endif -%}
+
+{% stylesheet %}
+  .cart-line-subscription {
+    --cart-drawer-ink: #231f20;
+    --cart-drawer-accent: #14495b;
+    --cart-drawer-border: #e0e6ed;
+    --cart-drawer-muted: #656363;
+    --cart-drawer-divider: #8f928f;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--cart-drawer-border);
+    background: #ffffff;
+    color: var(--cart-drawer-ink);
+  }
+
+  .cart-line-subscription[aria-busy='true'] {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .cart-line-subscription__details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .cart-line-subscription__title {
+    font-family: var(--font-subheading--family);
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 600;
+    color: var(--cart-drawer-ink);
+  }
+
+  .cart-line-subscription__discount {
+    font-weight: 500;
+  }
+
+  .cart-line-subscription__hint {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: var(--cart-drawer-muted);
+  }
+
+  .cart-line-subscription__plan {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: var(--cart-drawer-ink);
+  }
+
+  .cart-line-subscription__plan--active {
+    font-weight: 600;
+    color: var(--cart-drawer-accent);
+    text-decoration: underline;
+  }
+
+  .cart-line-subscription__toggle {
+    flex: none;
+    display: inline-flex;
+    cursor: pointer;
+  }
+
+  .cart-line-subscription__track {
+    position: relative;
+    display: block;
+    width: 38px;
+    height: 20px;
+    border-radius: 10px;
+    background: var(--cart-drawer-divider);
+    transition: background-color var(--animation-speed) var(--animation-easing);
+  }
+
+  .cart-line-subscription__track::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 2px;
+    inset-inline-start: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: transform var(--animation-speed) var(--animation-easing);
+  }
+
+  .cart-line-subscription__input:checked + .cart-line-subscription__track {
+    background: var(--cart-drawer-accent);
+  }
+
+  .cart-line-subscription__input:checked + .cart-line-subscription__track::after {
+    transform: translateX(18px);
+  }
+
+  [dir='rtl'] .cart-line-subscription__input:checked + .cart-line-subscription__track::after {
+    transform: translateX(-18px);
+  }
+
+  .cart-line-subscription__input:focus-visible + .cart-line-subscription__track {
+    outline: 2px solid var(--cart-drawer-accent);
+    outline-offset: 2px;
+  }
+
+  .cart-line-subscription__input:disabled + .cart-line-subscription__track {
+    opacity: 0.5;
+  }
+
+  @media screen and (prefers-reduced-motion: reduce) {
+    .cart-line-subscription__track,
+    .cart-line-subscription__track::after {
+      transition: none;
+    }
+  }
+{% endstylesheet %}

@@ -11,6 +11,8 @@
   @param {number} [min] - override the minimum quantity (e.g., 0 for quick order list)
   @param {block} [block] - The block object, used for Shopify editor attributes.
   @param {string} [wrapper_class] - Extra class for the wrapper, used to scope block-level CSS variable overrides so surface-level styles (e.g. quick-add modal) can override them.
+  @param {string} [increase_action] - Optional `on:click` target for the plus button (e.g. '#cart-options-drawer/openForLine'). Defaults to '/increaseQuantity'.
+  @param {string} [increase_attributes] - Optional extra attributes echoed onto the plus button (e.g. data-* attributes consumed by the options drawer).
 {%- enddoc -%}
 
 {% liquid
@@ -87,8 +89,9 @@
       class="button quantity-plus button-unstyled"
       type="button"
       name="plus"
-      on:click="/increaseQuantity"
+      on:click="{{ increase_action | default: '/increaseQuantity' }}"
       ref="plusButton"
+      {{ increase_attributes }}
       {% if can_update_quantity == false %}
         disabled
       {% endif %}

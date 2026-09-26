@@ -1,0 +1,243 @@
+{% doc %}
+  Renders the yellow upsell strip at the bottom of the cart drawer: a heading
+  ("Best Sellers" / "Add N more to unlock X%") and a horizontally scrolling row of
+  product cards from the merchant's upsell collection, excluding products already in the cart.
+
+  @param {string} context - 'empty' or 'filled'
+
+  @example
+  {% render 'cart-drawer-upsells', context: 'filled' %}
+{% enddoc %}
+
+{%- liquid
+  assign upsell_collection = settings.cart_upsell_collection
+-%}
+
+{%- if upsell_collection != blank and upsell_collection.products.size > 0 -%}
+  {%- liquid
+    assign cart_product_ids = cart.items | map: 'product_id'
+    assign upsell_limit = settings.cart_upsell_limit | default: 4
+    assign tier1_qty = settings.cart_bundle_tier_1_qty | default: 2
+    assign tier1_pct = settings.cart_bundle_tier_1_pct | default: 5
+    assign tier2_qty = settings.cart_bundle_tier_2_qty | default: 3
+    assign tier2_pct = settings.cart_bundle_tier_2_pct | default: 10
+
+    if context == 'empty'
+      assign upsell_heading = settings.cart_upsell_heading_empty
+    elsif settings.cart_bundle_enabled and cart.item_count < tier1_qty
+      assign remaining = tier1_qty | minus: cart.item_count
+      assign upsell_heading = 'Add ' | append: remaining | append: ' more to unlock ' | append: tier1_pct | append: '%'
+    elsif settings.cart_bundle_enabled and cart.item_count < tier2_qty
+      assign remaining = tier2_qty | minus: cart.item_count
+      assign upsell_heading = 'Add ' | append: remaining | append: ' more to unlock ' | append: tier2_pct | append: '%'
+    else
+      assign upsell_heading = settings.cart_upsell_heading_fallback
+    endif
+  -%}
+
+  {%- capture upsell_cards -%}
+    {%- assign rendered_count = 0 -%}
+    {%- for product in upsell_collection.products -%}
+      {%- if rendered_count >= upsell_limit -%}
+        {%- break -%}
+      {%- endif -%}
+      {%- if cart_product_ids contains product.id -%}
+        {%- continue -%}
+      {%- endif -%}
+      {%- assign variant = product.selected_or_first_available_variant -%}
+      {%- if variant == blank -%}
+        {%- continue -%}
+      {%- endif -%}
+      {%- assign rendered_count = rendered_count | plus: 1 -%}
+      <li class="cart-drawer-upsells__card">
+        <a
+          href="{{ product.url }}"
+          class="cart-drawer-upsells__image"
+          aria-label="{{ product.title | escape }}"
+        >
+          {%- if product.featured_image -%}
+            {{
+              product.featured_image
+              | image_url: width: 144
+              | image_tag: loading: 'lazy', alt: product.featured_image.alt, class: 'cart-drawer-upsells__img', width: 72, height: 72
+            }}
+          {%- endif -%}
+        </a>
+        <div class="cart-drawer-upsells__details">
+          <a
+            href="{{ product.url }}"
+            class="cart-drawer-upsells__title"
+          >
+            {{- product.title -}}
+          </a>
+          {%- unless product.has_only_default_variant -%}
+            <span class="cart-drawer-upsells__variant">{{ variant.options | join: ' | ' }}</span>
+          {%- endunless -%}
+          <button
+            type="button"
+            class="cart-drawer-upsells__add"
+            data-product-url="{{ product.url }}"
+            data-variant-id="{{ variant.id }}"
+            on:click="#cart-options-drawer/openForProduct"
+            aria-label="Add {{ product.title | escape }} to cart"
+          >
+            Add | {{ variant.price | money }}
+          </button>
+        </div>
+      </li>
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  {%- if rendered_count > 0 -%}
+    <aside
+      class="cart-drawer-upsells"
+      aria-label="Recommended products"
+    >
+      <h3 class="cart-drawer-upsells__heading">{{ upsell_heading }}</h3>
+      <ul
+        class="cart-drawer-upsells__list"
+        role="list"
+      >
+        {{ upsell_cards }}
+      </ul>
+    </aside>
+  {%- endif -%}
+{%- endif -%}
+
+{% stylesheet %}
+  .cart-drawer-upsells {
+    --cart-drawer-ink: #231f20;
+    --cart-drawer-accent: #14495b;
+    --cart-drawer-surface: #fcf9f5;
+    --cart-drawer-upsell-bg: #e9ea6b;
+    --cart-drawer-thumb-bg: #f1e8da;
+    --cart-drawer-divider: #8f928f;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px 20px;
+    background: var(--cart-drawer-upsell-bg);
+    color: var(--cart-drawer-ink);
+    flex-shrink: 0;
+  }
+
+  .cart-drawer-upsells__heading {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-size: 24px;
+    line-height: 24px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--cart-drawer-ink);
+  }
+
+  .cart-drawer-upsells__list {
+    display: flex;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cart-drawer-upsells__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cart-drawer-upsells__card {
+    position: relative;
+    display: flex;
+    gap: 16px;
+    flex: none;
+    width: 260px;
+    min-height: 98px;
+    scroll-snap-align: start;
+  }
+
+  .cart-drawer-upsells__card + .cart-drawer-upsells__card {
+    padding-inline-start: 17px;
+  }
+
+  .cart-drawer-upsells__card + .cart-drawer-upsells__card::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0;
+    width: 1px;
+    height: 98px;
+    background: var(--cart-drawer-divider);
+  }
+
+  .cart-drawer-upsells__image {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    overflow: hidden;
+    background: var(--cart-drawer-thumb-bg);
+  }
+
+  .cart-drawer-upsells__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .cart-drawer-upsells__details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .cart-drawer-upsells__title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-family: var(--font-body--family);
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cart-drawer-ink);
+    text-decoration: none;
+    overflow-wrap: break-word;
+  }
+
+  .cart-drawer-upsells__variant {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: var(--cart-drawer-ink);
+  }
+
+  .cart-drawer-upsells__add {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 0;
+    background: var(--cart-drawer-accent);
+    color: var(--cart-drawer-surface);
+    font-family: var(--font-subheading--family);
+    font-size: 10px;
+    line-height: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .cart-drawer-upsells__add:hover {
+    opacity: 0.9;
+  }
+{% endstylesheet %}

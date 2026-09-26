@@ -1,0 +1,339 @@
+{% doc %}
+  Renders the sticky top block of the filled cart drawer: subtotal, savings, the bundle-tier
+  progress card, the native checkout CTA (via cart-summary), and the shipping note.
+
+  @param {string} section_id - The section ID passed through to cart-summary for the discount component.
+
+  @example
+  {% render 'cart-drawer-summary', section_id: 'cart-drawer-section' %}
+{% enddoc %}
+
+{%- liquid
+  assign compare_savings = 0
+  for item in cart.items
+    if item.variant.compare_at_price > item.final_price
+      assign item_saving = item.variant.compare_at_price | minus: item.final_price | times: item.quantity
+      assign compare_savings = compare_savings | plus: item_saving
+    endif
+  endfor
+  assign total_savings = compare_savings | plus: cart.total_discount
+
+  assign tier1_qty = settings.cart_bundle_tier_1_qty | default: 2
+  assign tier1_pct = settings.cart_bundle_tier_1_pct | default: 5
+  assign tier2_qty = settings.cart_bundle_tier_2_qty | default: 3
+  assign tier2_pct = settings.cart_bundle_tier_2_pct | default: 10
+
+  assign progress_pct = 0
+  assign reached_pct = 0
+  if cart.item_count >= tier2_qty
+    assign progress_pct = 100
+    assign reached_pct = tier2_pct
+  elsif cart.item_count >= tier1_qty
+    assign progress_pct = 50
+    assign reached_pct = tier1_pct
+  endif
+
+  if cart.item_count < tier1_qty
+    assign remaining = tier1_qty | minus: cart.item_count
+    assign next_pct = tier1_pct
+  elsif cart.item_count < tier2_qty
+    assign remaining = tier2_qty | minus: cart.item_count
+    assign next_pct = tier2_pct
+  else
+    assign remaining = 0
+    assign next_pct = 0
+  endif
+-%}
+
+<div class="cart-drawer-summary">
+  <div class="cart-drawer-summary__row cart-drawer-summary__subtotal">
+    <span class="cart-drawer-summary__label">Subtotal</span>
+    <span class="cart-drawer-summary__value"
+      ><bdi>{{ cart.items_subtotal_price | money }}</bdi
+    ></span>
+  </div>
+
+  {%- if total_savings > 0 -%}
+    <div class="cart-drawer-summary__row cart-drawer-summary__savings">
+      <span>You're saving</span>
+      <span><bdi>-{{ total_savings | money }}</bdi></span>
+    </div>
+  {%- endif -%}
+
+  {%- if settings.cart_bundle_enabled -%}
+    <div class="cart-drawer-summary__bundle">
+      <div class="cart-drawer-summary__bundle-header">
+        <p class="cart-drawer-summary__bundle-text">
+          {%- if remaining > 0 -%}
+            Add {{ remaining }} more {% if remaining == 1 %}item{% else %}items{% endif %} to save {{ next_pct }}% on your order
+          {%- else -%}
+            You're saving {{ reached_pct }}% with the bundle discount
+          {%- endif -%}
+        </p>
+        <span class="cart-drawer-summary__badge">
+          {%- if reached_pct > 0 -%}
+            {{ reached_pct }}% bundle discount
+          {%- else -%}
+            {{ settings.cart_bundle_badge_none }}
+          {%- endif -%}
+        </span>
+      </div>
+
+      <div
+        class="cart-drawer-summary__progress"
+        role="progressbar"
+        aria-label="Bundle discount progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="{{ progress_pct }}"
+      >
+        <div
+          class="cart-drawer-summary__track"
+          style="--cart-drawer-progress: {{ progress_pct }}%;"
+        >
+          <span class="cart-drawer-summary__fill"></span>
+          <span class="cart-drawer-summary__marker cart-drawer-summary__marker--start"></span>
+          <span class="cart-drawer-summary__tick cart-drawer-summary__tick--mid"></span>
+          <span class="cart-drawer-summary__tick cart-drawer-summary__tick--end"></span>
+        </div>
+        <div class="cart-drawer-summary__labels">
+          <span class="cart-drawer-summary__spacer" aria-hidden="true"></span>
+          <span class="cart-drawer-summary__tier">{{ tier1_qty }} items · {{ tier1_pct }}%</span>
+          <span class="cart-drawer-summary__tier">{{ tier2_qty }} items · {{ tier2_pct }}%</span>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="cart-drawer-summary__ctas">
+    {% render 'cart-summary', section_id: section_id %}
+  </div>
+
+  {%- if settings.cart_drawer_shipping_note != blank -%}
+    <p class="cart-drawer-summary__note">{{ settings.cart_drawer_shipping_note }}</p>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .cart-drawer-summary {
+    --cart-drawer-ink: #231f20;
+    --cart-drawer-surface: #fcf9f5;
+    --cart-drawer-cta: #9bd7d7;
+    --cart-drawer-thumb-bg: #f1e8da;
+    --cart-drawer-success: #5c856b;
+    --cart-drawer-divider: #8f928f;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 16px 0;
+    background: #ffffff;
+    color: var(--cart-drawer-ink);
+  }
+
+  .cart-drawer-summary__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .cart-drawer-summary__label {
+    font-family: var(--font-subheading--family);
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 600;
+  }
+
+  .cart-drawer-summary__value {
+    font-family: var(--font-subheading--family);
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+  }
+
+  .cart-drawer-summary__savings {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    color: var(--cart-drawer-success);
+  }
+
+  .cart-drawer-summary__bundle {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: var(--cart-drawer-surface);
+  }
+
+  .cart-drawer-summary__bundle-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .cart-drawer-summary__bundle-text {
+    margin: 0;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    max-width: 169px;
+  }
+
+  .cart-drawer-summary__badge {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    background: var(--cart-drawer-thumb-bg);
+    font-size: 10px;
+    line-height: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .cart-drawer-summary__progress {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 336px;
+  }
+
+  .cart-drawer-summary__track {
+    position: relative;
+    height: 20px;
+  }
+
+  .cart-drawer-summary__track::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 9px;
+    height: 2px;
+    background: var(--cart-drawer-divider);
+  }
+
+  .cart-drawer-summary__fill {
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 9px;
+    width: var(--cart-drawer-progress, 0%);
+    height: 2px;
+    background: var(--cart-drawer-success);
+    transition: width var(--animation-speed) var(--animation-easing);
+  }
+
+  .cart-drawer-summary__marker {
+    position: absolute;
+    inset-block-start: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cart-drawer-success);
+  }
+
+  .cart-drawer-summary__marker--start {
+    inset-inline-start: 0;
+  }
+
+  .cart-drawer-summary__tick {
+    position: absolute;
+    inset-block-start: 5px;
+    width: 1px;
+    height: 10px;
+    background: var(--cart-drawer-divider);
+  }
+
+  .cart-drawer-summary__tick--mid {
+    inset-inline-start: 50%;
+  }
+
+  .cart-drawer-summary__tick--end {
+    inset-inline-end: 0;
+  }
+
+  .cart-drawer-summary__labels {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: 500;
+    letter-spacing: 0.12px;
+  }
+
+  .cart-drawer-summary__spacer {
+    flex: 1;
+  }
+
+  .cart-drawer-summary__tier {
+    flex: 1;
+    text-align: end;
+  }
+
+  .cart-drawer-summary__ctas {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  /* The Subtotal row above replaces the native total row; hide it (and the tax note) in the drawer only. */
+  .cart-drawer-summary__ctas .cart-totals__total,
+  .cart-drawer-summary__ctas .cart-totals__tax-note {
+    display: none;
+  }
+
+  .cart-drawer-summary__ctas .cart-totals {
+    gap: 8px;
+  }
+
+  .cart-drawer-summary__ctas .cart-totals:not(:has(.cart-actions)) {
+    margin-block-start: 0;
+    border-block-start: none;
+    padding-block-start: 0;
+  }
+
+  .cart-drawer-summary__ctas .cart-totals__container:not(:has(> :not(.cart-totals__total, .cart-totals__tax-note))) {
+    display: none;
+  }
+
+  .cart-drawer-summary__ctas .cart-actions {
+    margin-block-start: 0;
+  }
+
+  .cart-drawer-summary__ctas .cart__ctas .cart__checkout-button {
+    height: auto;
+    min-height: 40px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 0;
+    background: var(--cart-drawer-cta);
+    color: var(--cart-drawer-ink);
+    font-family: var(--font-subheading--family);
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 600;
+    width: 100%;
+  }
+
+  .cart-drawer-summary__ctas .cart__ctas .cart__checkout-button:hover {
+    background: var(--cart-drawer-cta);
+    color: var(--cart-drawer-ink);
+  }
+
+  .cart-drawer-summary__note {
+    margin: 0;
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: 500;
+    letter-spacing: 0.12px;
+    text-align: center;
+    color: var(--cart-drawer-ink);
+  }
+{% endstylesheet %}

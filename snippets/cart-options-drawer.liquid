@@ -1,0 +1,162 @@
+{% doc %}
+  Nested bottom-sheet dialog rendered inside the cart drawer. Lists a product's option values
+  and selling plans so shoppers can add (or add another of) a product without leaving the cart.
+  Content is fetched on demand by assets/cart-options-drawer.js from
+  `sections/cart-options-drawer-content.liquid` via the Section Rendering API.
+
+  @example
+  {% render 'cart-options-drawer' %}
+{% enddoc %}
+
+{% render 'dialog-styles' %}
+
+<script
+  type="module"
+  src="{{ 'cart-options-drawer.js' | asset_url }}"
+  fetchpriority="low"
+></script>
+
+<cart-options-drawer id="cart-options-drawer">
+  <dialog
+    ref="dialog"
+    class="dialog-drawer cart-options-drawer__dialog color-custom-drawer"
+    scroll-lock
+    aria-labelledby="cart-options-drawer-heading"
+  >
+    <div class="cart-options-drawer__header">
+      <h2
+        id="cart-options-drawer-heading"
+        class="cart-options-drawer__heading"
+        ref="title"
+      >
+        Choose options
+      </h2>
+      <button
+        type="button"
+        class="cart-options-drawer__close button-unstyled"
+        on:click="/closeDialog"
+        aria-label="Close options"
+      >
+        <span class="svg-wrapper">
+          {{- 'icon-close.svg' | inline_asset_content -}}
+        </span>
+      </button>
+    </div>
+
+    <div
+      class="cart-options-drawer__content"
+      ref="content"
+    ></div>
+  </dialog>
+</cart-options-drawer>
+
+{% stylesheet %}
+  cart-options-drawer {
+    display: contents;
+  }
+
+  .cart-options-drawer__dialog {
+    --cart-drawer-surface: #fcf9f5;
+    --cart-drawer-ink: #231f20;
+    --cart-drawer-thumb-bg: #f1e8da;
+
+    /* Bottom sheet: slide up instead of the default inline slide */
+    --custom-transform-from: 0px;
+    --custom-transform-to: 0px;
+
+    position: fixed;
+    inset: auto 0 0 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 85dvh;
+    padding: 0;
+    border: none;
+    background: #ffffff;
+    color: var(--cart-drawer-ink);
+    flex-direction: column;
+    overflow: hidden;
+    z-index: calc(var(--layer-overlay) + 1);
+  }
+
+  .cart-options-drawer__dialog[open] {
+    --start-y: 100%;
+    --end-y: 0px;
+
+    display: flex;
+  }
+
+  cart-options-drawer .cart-options-drawer__dialog[open].dialog-closing {
+    --start-x: 0px;
+    --end-x: 0px;
+    --start-y: 0px;
+    --end-y: 100%;
+  }
+
+  .cart-options-drawer__dialog::backdrop {
+    background: rgb(0 0 0 / 0.3);
+  }
+
+  @media screen and (min-width: 750px) {
+    .cart-options-drawer__dialog {
+      inset-inline: auto 0;
+      width: var(--theme-drawer-width, var(--sidebar-width));
+      margin-inline-start: auto;
+    }
+
+    [dir='rtl'] .cart-options-drawer__dialog {
+      inset-inline: 0 auto;
+    }
+  }
+
+  .cart-options-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-shrink: 0;
+    padding: 20px;
+    background: var(--cart-drawer-surface);
+    border-bottom: 1px solid var(--cart-drawer-thumb-bg);
+  }
+
+  .cart-options-drawer__heading {
+    margin: 0;
+    font-family: var(--font-subheading--family);
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    color: var(--cart-drawer-ink);
+  }
+
+  .cart-options-drawer__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    color: var(--cart-drawer-ink);
+    cursor: pointer;
+  }
+
+  .cart-options-drawer__close .svg-wrapper,
+  .cart-options-drawer__close svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .cart-options-drawer__content {
+    flex: 1;
+    min-height: 0;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .cart-options-drawer__loading {
+    margin: 0;
+    font-size: 14px;
+    line-height: 16px;
+    color: var(--cart-drawer-ink);
+  }
+{% endstylesheet %}

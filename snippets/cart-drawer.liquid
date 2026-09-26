@@ -27,16 +27,11 @@
       class="cart-drawer__content"
       aria-label="{{ 'accessibility.cart' | t }}"
     >
-      <h2
-        class="theme-drawer__title h4"
-        id="cart-drawer-heading"
-      >
-        {{ 'content.your_cart_is_empty' | t }}
-      </h2>
-
       <div class="cart-drawer__items">
         {% render 'cart-products', force_empty: true, context: 'drawer' %}
       </div>
+
+      {% render 'cart-drawer-upsells', context: 'empty' %}
     </div>
   {% endcapture %}
 
@@ -64,36 +59,20 @@
           data-hydration-key="cart-drawer-inner"
         >
           {%- if cart.empty? -%}
-            <div class="theme-drawer__header">
-              <button
-                on:click="#cart-drawer/close"
-                class="theme-drawer__close-button cart-drawer__close-button--empty"
-                type="button"
-                aria-label="{{ 'actions.close' | t }}"
-              >
-                <span class="svg-wrapper">
-                  {{- 'icon-close.svg' | inline_asset_content -}}
-                </span>
-              </button>
-            </div>
+            {% render 'theme-drawer-header',
+              title: 'Your Cart',
+              drawer_id: 'cart-drawer',
+              heading_id: 'cart-drawer-heading'
+            %}
           {%- else -%}
             {% capture cart_badge_html %}
-              <span
-                class="theme-drawer__badge{% if cart.item_count == 0 %} visually-hidden{% endif %}"
-                aria-hidden="true"
-                {% if cart.item_count <= 99 %}
-                  data-maintain-ratio
-                {% endif %}
-              >
-                {{- cart.item_count -}}
+              <span class="visually-hidden">
+                {{ 'accessibility.cart_count' | t }}: {{ cart.item_count }}
               </span>
-              {% if cart.item_count > 0 %}
-                <span class="visually-hidden">
-                  {{ 'accessibility.cart_count' | t }}: {{ cart.item_count }}
-                </span>
-              {% endif %}
             {% endcapture %}
-            {% assign cart_drawer_title = 'content.cart_title' | t %}
+            {% capture cart_drawer_title -%}
+              Your Cart ({{ cart.item_count }} {% if cart.item_count == 1 %}item{% else %}items{% endif %})
+            {%- endcapture %}
             {% render 'theme-drawer-header',
               title: cart_drawer_title,
               drawer_id: 'cart-drawer',
@@ -110,13 +89,15 @@
                 class="cart-drawer__content"
                 aria-label="{{ 'accessibility.cart' | t }}"
               >
+                <div class="cart-drawer__summary">
+                  {% render 'cart-drawer-summary', section_id: 'cart-drawer-section' %}
+                </div>
+
                 <scroll-hint class="cart-drawer__items">
                   {% render 'cart-products', context: 'drawer' %}
                 </scroll-hint>
 
-                <div class="cart-drawer__summary">
-                  {% render 'cart-summary', section_id: 'cart-drawer-section' %}
-                </div>
+                {% render 'cart-drawer-upsells', context: 'filled' %}
               </scroll-hint>
             {%- endif -%}
           {% endcapture %}
@@ -126,6 +107,8 @@
             section_id: 'cart-drawer-section'
           %}
         </div>
+
+        {% render 'cart-options-drawer' %}
       </cart-drawer-component>
     </dialog>
   </theme-drawer>
@@ -137,9 +120,64 @@
 
 {% stylesheet %}
   cart-drawer-component {
-    --cart-drawer-padding: var(--theme-drawer-padding);
+    --cart-drawer-padding: 16px;
     --font-paragraph--line-height: 1;
     display: contents;
+  }
+
+  #cart-drawer .theme-drawer__dialog {
+    --cart-drawer-surface: #fcf9f5;
+    --cart-drawer-ink: #231f20;
+    --cart-drawer-accent: #14495b;
+    --cart-drawer-cta: #9bd7d7;
+    --cart-drawer-upsell-bg: #e9ea6b;
+    --cart-drawer-thumb-bg: #f1e8da;
+    --cart-drawer-border: #e0e6ed;
+    --cart-drawer-success: #5c856b;
+    --cart-drawer-muted: #656363;
+    --cart-drawer-divider: #8f928f;
+    --cart-drawer-padding: 16px;
+
+    background-color: #ffffff;
+    color: var(--cart-drawer-ink);
+  }
+
+  #cart-drawer .theme-drawer__header {
+    padding: 20px;
+    background: var(--cart-drawer-surface);
+    border-bottom: 1px solid var(--cart-drawer-thumb-bg);
+    color: var(--cart-drawer-ink);
+  }
+
+  #cart-drawer .theme-drawer__header .theme-drawer__title {
+    font-family: var(--font-subheading--family);
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    color: var(--cart-drawer-ink);
+  }
+
+  #cart-drawer .theme-drawer__header .theme-drawer__close-button {
+    --private-button-size: 24px;
+
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    color: var(--cart-drawer-ink);
+  }
+
+  #cart-drawer .theme-drawer__header .theme-drawer__close-button:hover:not(:active) {
+    background: transparent;
+    color: var(--cart-drawer-ink);
+  }
+
+  #cart-drawer .theme-drawer__header .theme-drawer__close-button .svg-wrapper,
+  #cart-drawer .theme-drawer__header .theme-drawer__close-button svg {
+    width: 24px;
+    height: 24px;
   }
 
   .cart-drawer__inner {
@@ -159,7 +197,7 @@
     display: flex;
     flex-direction: column;
     padding: 0;
-    background-color: var(--color-background);
+    background: #ffffff;
     flex-grow: 1;
     overflow-y: auto;
   }
@@ -167,14 +205,27 @@
   .cart-drawer__items {
     display: flex;
     flex-direction: column;
-    padding-inline: var(--cart-drawer-padding);
+    gap: 24px;
+    padding: 24px 16px 0;
     overflow-y: auto;
   }
 
+  .cart-drawer__items .cart-items {
+    padding: 0;
+  }
+
   .cart-drawer__items .cart-items__table-row {
-    padding-bottom: var(--gap-xl);
-    border-bottom: var(--style-border-width) solid rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
-    margin-bottom: var(--gap-xl);
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e0e6ed;
+    margin-bottom: 0;
+  }
+
+  .cart-drawer__items .cart-items__table-row + .cart-items__table-row {
+    padding-top: 24px;
+  }
+
+  .cart-drawer-upsells {
+    margin-top: auto;
   }
 
   .cart-drawer__items .cart-items__table-row:has(+ .cart-items__nested-line) {
@@ -193,24 +244,21 @@
   }
 
   .cart-drawer__summary {
-    --cart-drawer-summary-padding: var(--padding-lg);
+    --cart-drawer-summary-padding: 0;
 
     position: sticky;
-    bottom: 0;
+    top: 0;
+    bottom: auto;
     z-index: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: var(--gap-xl);
-    padding: var(--cart-drawer-summary-padding);
-    margin-top: auto;
-    background-color: var(--color-background);
-    /* stylelint-disable-next-line color-named */
-    mask-image: linear-gradient(to bottom, transparent, black var(--cart-drawer-summary-padding));
-
-    @media screen and (min-width: 750px) {
-      --cart-drawer-summary-padding: var(--padding-2xl);
-    }
+    align-items: stretch;
+    gap: 8px;
+    padding: 0 0 16px;
+    margin-top: 0;
+    background: #ffffff;
+    border-bottom: 1px solid #e0e6ed;
+    mask-image: none;
   }
 
   .theme-drawer__dialog[cart-summary-sticky='false'] .cart-drawer__summary {
@@ -229,9 +277,10 @@
     min-height: var(--minimum-touch-target);
   }
 
-  .cart-drawer__summary .cart__summary-totals:not(:has(.cart__subtotal-container:empty)) {
-    border-block-start: var(--style-border-width) solid rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
-    padding-block-start: var(--padding-2xl);
+  .cart-drawer__summary .cart__summary-totals:not(:has(.cart__subtotal-container:empty)),
+  .cart-drawer__summary .cart-totals:not(:has(.cart-totals__original-container:empty)) {
+    border-block-start: none;
+    padding-block-start: 0;
   }
 
   .cart-drawer__summary .cart-note {
@@ -240,25 +289,27 @@
     }
   }
 
-  .cart-drawer--empty .cart-drawer__content {
+  .cart-drawer--empty .cart-drawer__content,
+  cart-drawer-component:not(:has(.cart-form)) .cart-drawer__content {
     text-align: center;
-    align-items: center;
-    justify-content: center;
+    align-items: stretch;
+    justify-content: flex-start;
     min-height: auto;
   }
 
-  .cart-drawer--empty .cart-drawer__items {
-    padding-inline: 0;
-  }
-
-  cart-drawer-component:not(:has(.cart-form)) .cart-drawer__content {
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-  }
-
+  .cart-drawer--empty .cart-drawer__items,
   cart-drawer-component:not(:has(.cart-form)) .cart-drawer__items {
-    padding-inline: 0;
+    flex: 1 0 auto;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .cart-drawer--empty .cart-drawer__items .cart-items__wrapper--drawer-empty,
+  cart-drawer-component:not(:has(.cart-form)) .cart-drawer__items .cart-items__wrapper--drawer-empty {
+    width: 100%;
   }
 
   @media screen and (prefers-reduced-motion: no-preference) {
