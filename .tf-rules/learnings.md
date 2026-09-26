@@ -1,0 +1,3 @@
+## Recent
+[chat] Horizon on:click/on:change handlers receive DELEGATED events (single document-level capture listener in assets/component.js) — inside a handler, event.currentTarget is `document`, never the button. Read the trigger from the proxied `event.target` (rewritten to the element carrying the on: attribute), optionally with .closest('[data-...]'). Any `event.currentTarget instanceof HTMLElement` guard fails silently.
+[chat] component.js's custom-element upgrade-race fallback only fires for tag names ending in `-component` — custom elements named otherwise (e.g. cart-options-drawer) get events silently dropped if their module hasn't executed yet.
