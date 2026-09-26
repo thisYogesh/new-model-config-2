@@ -18,7 +18,7 @@
   "
   style="
     {% render 'spacing-style', settings: section.settings %}
-    {% render 'gap-style', value: 12 %}
+    {% render 'gap-style', value: section.settings.gap %}
   "
   data-testid="carousel-section"
 >
@@ -86,6 +86,26 @@
       "default": 8
     },
     {
+      "type": "range",
+      "id": "columns_gap_mobile",
+      "label": "Horizontal gap (mobile)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
       "type": "color",
       "id": "background_color",
       "label": "t:settings.background_color",
@@ -143,6 +163,22 @@
       ],
       "default": "none",
       "visible_if": "{{ section.settings.icons_style != 'none' }}"
+    },
+    {
+      "type": "select",
+      "id": "pagination",
+      "label": "Pagination",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "dots",
+          "label": "Dots"
+        }
+      ],
+      "default": "none"
     },
     {
       "type": "header",

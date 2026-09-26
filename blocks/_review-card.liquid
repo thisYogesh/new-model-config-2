@@ -1,0 +1,214 @@
+<div
+  class="card review-card"
+  ref="slides[]"
+  data-carousel-card
+  style="--review-card-color: {{ block.settings.text_color }};"
+  {{ block.shopify_attributes }}
+>
+  <div class="review-card__top">
+    <div class="review-card__media">
+      {%- if block.settings.image != blank -%}
+        {{
+          block.settings.image
+          | image_url: width: 800
+          | image_tag:
+            loading: 'lazy',
+            widths: '200, 310, 400, 620, 800',
+            sizes: '(min-width: 750px) 310px, 200px',
+            alt: block.settings.title
+        }}
+      {%- else -%}
+        {{ 'image' | placeholder_svg_tag: 'review-card__placeholder' }}
+      {%- endif -%}
+    </div>
+
+    <div class="review-card__body">
+      {% render 'review-stars', rating: block.settings.rating %}
+
+      {%- if block.settings.title != blank -%}
+        <p class="review-card__title">{{ block.settings.title }}</p>
+      {%- endif -%}
+
+      {%- if block.settings.quote != blank -%}
+        <div class="review-card__quote">{{ block.settings.quote }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="review-card__footer">
+    {%- if block.settings.author != blank -%}
+      <div class="review-card__author">
+        {{- 'check-circle.svg' | inline_asset_content -}}
+        <span>{{ block.settings.author }}</span>
+      </div>
+    {%- endif -%}
+
+    {%- if block.settings.product_label != blank -%}
+      {%- if block.settings.product_link != blank -%}
+        <a class="review-card__product" href="{{ block.settings.product_link }}">
+          {{- block.settings.product_label -}}
+        </a>
+      {%- else -%}
+        <span class="review-card__product">{{ block.settings.product_label }}</span>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .review-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    font-family: var(--font-body--family);
+    color: var(--review-card-color, rgb(var(--color-foreground-rgb)));
+  }
+
+  .review-card__media {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+
+  .review-card__media img,
+  .review-card__media svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .review-card__top {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .review-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .review-card__title {
+    margin: 0;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .review-card__quote {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  .review-card__quote p {
+    margin: 0;
+  }
+
+  .review-card__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-block-start: auto;
+    padding-block-start: 24px;
+    border-top: 1px solid rgb(var(--color-foreground-rgb) / 0.2);
+  }
+
+  .review-card__author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .review-card__author svg {
+    display: block;
+    width: 21px;
+    height: 21px;
+    flex: 0 0 auto;
+  }
+
+  .review-card__product {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.14px;
+    text-decoration: underline;
+    color: inherit;
+  }
+
+  @media screen and (min-width: 750px) {
+    .review-card__top {
+      gap: 16px;
+    }
+
+    .review-card__quote {
+      font-size: 16px;
+      line-height: 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Review card",
+  "tag": null,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "range",
+      "id": "rating",
+      "label": "Rating",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "default": 4.5
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Eco-friendly product"
+    },
+    {
+      "type": "richtext",
+      "id": "quote",
+      "label": "Quote",
+      "default": "<p>“The pods are convenient to use as I have low vision and do not want to measure a cleaning product. I like that I could choose an unscented product. Best of all, it comes in recyclable packaging.”</p>"
+    },
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Author",
+      "default": "Kathy F"
+    },
+    {
+      "type": "text",
+      "id": "product_label",
+      "label": "Product label",
+      "default": "Laundry Pods"
+    },
+    {
+      "type": "url",
+      "id": "product_link",
+      "label": "Product link"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#231F20"
+    }
+  ]
+}
+{% endschema %}

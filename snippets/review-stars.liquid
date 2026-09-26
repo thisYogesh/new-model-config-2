@@ -1,0 +1,60 @@
+{%- doc -%}
+  Renders a row of star icons for a review rating.
+
+  @param {number} rating - The rating to render, from 0 to 5 in half-star steps.
+  @param {string} [class] - Additional CSS class applied to the wrapper element.
+
+  @example
+  {% render 'review-stars', rating: 4.5 %}
+{%- enddoc -%}
+
+{%- liquid
+  assign star_rating = rating | default: 5
+  if star_rating > 5
+    assign star_rating = 5
+  endif
+  if star_rating < 0
+    assign star_rating = 0
+  endif
+
+  assign full_stars = star_rating | floor
+  assign star_remainder = star_rating | minus: full_stars
+
+  assign show_half_star = false
+  if star_remainder >= 0.25
+    assign show_half_star = true
+  endif
+
+  assign stars_label = star_rating | append: ' out of 5 stars'
+
+  assign wrapper_class = 'review-stars'
+  if class != blank
+    assign wrapper_class = wrapper_class | append: ' ' | append: class
+  endif
+-%}
+
+<span class="{{ wrapper_class }}" role="img" aria-label="{{ stars_label }}">
+  {%- if full_stars > 0 -%}
+    {%- for i in (1..full_stars) -%}
+      {{- 'icon-toggle-star-24px-2.svg' | inline_asset_content -}}
+    {%- endfor -%}
+  {%- endif -%}
+  {%- if show_half_star -%}
+    {{- 'icon-toggle-star-half-24px.svg' | inline_asset_content -}}
+  {%- endif -%}
+</span>
+
+{% stylesheet %}
+  .review-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+  }
+
+  .review-stars svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+    flex: 0 0 auto;
+  }
+{% endstylesheet %}
